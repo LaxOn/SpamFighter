@@ -98,5 +98,7 @@ if __name__ == __name__ == "__main__":
     #evaluate(train_set, test_set, classifier)
     setup()
 
-
+os.system("ruby ./clever.rb")
+f = open('reply.txt', 'r')
+print f
 
