@@ -6,7 +6,7 @@ from collections import Counter
 from nltk import word_tokenize, WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk import NaiveBayesClassifier, classify
-
+import gmail
 
 stoplist = stopwords.words('english')
 def init_lists(folder):
@@ -54,7 +54,10 @@ def evaluate(train_set, test_set, classifier):
 
 #a is a string
 def testSpamS(a):
-    classifier.classify(get_features(a))
+    if (classifier.classify(get_features(a))=='spam'):
+        return True 
+    else:
+        return False
 
 #a is a file
 def testSpamf(a):
@@ -65,10 +68,23 @@ def testSpamf(a):
 
 
 
+def setup():
+    g= gmail.login('spamFilterTest123@gmail.com','100190000!')
+    m = g.inbox().mail()
+    #get messages
+    messages = []
+    for i in m:
+        i.fetch()
+        messages+=[(i,i.body)]
+    for (message, text) in messages:
+        if testSpamS(text):
+            message.star()  
+
+
 if __name__ == __name__ == "__main__":
     # initialise the data
-    spam = init_lists('../enron1/spam/')
-    ham = init_lists('../enron1/ham/')
+    spam = init_lists('/home/emol/cs/Practice/spamfigher/enron1/spam/')
+    ham = init_lists('/home/emol/cs/Practice/spamfigher/enron1/ham/')
     all_emails = [(email, 'spam') for email in spam]
     all_emails += [(email, 'ham') for email in ham]
     random.shuffle(all_emails)
@@ -80,7 +96,7 @@ if __name__ == __name__ == "__main__":
     train_set, test_set, classifier = train(all_features, 0.8)
     # evaluate its performance
     #evaluate(train_set, test_set, classifier)
-
+    setup()
 
 
 
